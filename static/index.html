@@ -4,6 +4,7 @@
 	<title></title>
 </head>
 <body>
+	<div id="response"></div>
 	<button id="submit">request</button>
 	<script type="text/javascript" src="./libs/jquery.min.js"></script>
 	<script type="text/javascript">
@@ -18,7 +19,7 @@
 					number : 123 //你要传的数据
 				}),
 				success : function(res){
-
+					$('#response').html(JSON.stringify(res));
 				},
 				error : function(e){
 					alert('net error');
