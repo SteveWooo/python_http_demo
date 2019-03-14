@@ -5,13 +5,6 @@ import json
 cur_dir = './'
 
 class ServerHTTP(BaseHTTPRequestHandler):
-	def do_OPTIONS(self):
-		self.send_response(200)
-		self.send_header("Content-type","Application/json")
-		self.send_header("Access-Control-Allow-Origin", "*");
-		self.end_headers()
-		self.wfile.write('')
-
 	# http get request
 	def do_GET(self):
 		if self.path=="/":
@@ -76,7 +69,7 @@ class ServerHTTP(BaseHTTPRequestHandler):
 		self.wfile.write(response)
 
 def start_server(port):
-	print("listened at 8000")
+	print("listened at ", port)
 	http_server = HTTPServer(('', int(port)), ServerHTTP)
 	http_server.serve_forever() 
 
