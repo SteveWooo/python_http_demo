@@ -5,11 +5,17 @@
 </head>
 <body>
 	<div id="response"></div>
+
+	<input id="input" />
+
 	<button id="submit_1">request add 1</button>
 	<button id="submit_2">request add 2</button>
 	<script type="text/javascript" src="./libs/jquery.min.js"></script>
 	<script type="text/javascript">
 		var number = 100;
+
+		var inputData = document.getElementById('input').value;
+
 		function submit(path){
 			$.ajax({
 				url : 'http://localhost:8000' + path,
@@ -18,7 +24,8 @@
 					'Content-Type' : 'Application/json'
 				},
 				data : JSON.stringify({
-					number : number //你要传的数据
+					number : number, //你要传的数据
+					input : inputData
 				}),
 				success : function(res){
 					$('#response').html(JSON.stringify(res));

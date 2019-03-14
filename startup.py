@@ -80,11 +80,13 @@ class ServerHTTP(BaseHTTPRequestHandler):
 		self.end_headers()
 
 		# use json.dumps to format
-		response = json.dumps({
-			'number' : data['number']
-		}).encode()
+		# response = json.dumps({
+		# 	'number' : data['number']
+		# }).encode()
 		# send
-		self.wfile.write(response)
+		self.wfile.write(json.dumps({
+			'number' : data['number']
+		}).encode())
 
 def start_server(port):
 	print("listened at ", port)
