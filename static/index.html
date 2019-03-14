@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<button id="submit">request</button>
+	<script type="text/javascript" src="./libs/jquery.min.js"></script>
+	<script type="text/javascript">
+		$('#submit').on('click', function(){
+			$.ajax({
+				url : 'http://localhost:8000/info',
+				method : 'post',
+				headers : {
+					'Content-Type' : 'Application/json'
+				},
+				data : JSON.stringify({
+					number : 123 //你要传的数据
+				}),
+				success : function(res){
+
+				},
+				error : function(e){
+					alert('net error');
+				}
+			})
+		})
+	</script>
+</body>
+</html>
