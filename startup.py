@@ -1,48 +1,61 @@
-from  BaseHTTPServer import HTTPServer,BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import urllib
 import json
+from os import path
+from urllib.parse import urlparse
 
-cur_dir = './'
+curdir = './'
+sep = '/'
+# MIME-TYPE
+mimedic = [
+	('.html', 'text/html'),
+	('.htm', 'text/html'),
+	('.js', 'application/javascript'),
+	('.css', 'text/css'),
+	('.json', 'application/json'),
+	('.png', 'image/png'),
+	('.jpg', 'image/jpeg'),
+	('.gif', 'image/gif'),
+	('.txt', 'text/plain'),
+	('.avi', 'video/x-msvideo'),
+]
 
 class ServerHTTP(BaseHTTPRequestHandler):
 	# http get request
 	def do_GET(self):
-		if self.path=="/":
-			self.path="/index.html"
+		sendReply = False
+		querypath = urlparse(self.path)
+		filepath, query = querypath.path, querypath.query
 
-		try:
-			sendReply = False
-			if self.path.endswith(".html"):
-				mimetype='text/html'
-				sendReply = True
-			if self.path.endswith(".js"):
-				mimetype='application/javascript'
-				sendReply = True
-			if self.path.endswith(".css"):
-				mimetype='text/css'
+		if filepath.endswith('/'):
+			filepath += 'static/index.html'
+		filename, fileext = path.splitext(filepath)
+		for e in mimedic:
+			if e[0] == fileext:
+				mimetype = e[1]
 				sendReply = True
 
-			if sendReply == True:
-				f = open(cur_dir + self.path)
-				self.send_response(200)
-				self.send_header('Content-type',mimetype)
-				self.end_headers()
-				self.wfile.write(f.read())
-				f.close()
-			return 
-		except IOError:
-			self.send_error(404,'File Not Found: %s' % self.path)
+		if sendReply == True:
+			try:
+				with open(path.realpath(curdir + sep + filepath),'rb') as f:
+					content = f.read()
+					self.send_response(200)
+					self.send_header('Content-type',mimetype)
+					self.end_headers()
+					self.wfile.write(content)
+			except IOError:
+				self.send_error('File Not Found: ')
 
 	# http post request
 	def do_POST(self):
 		path = self.path
 		# get request path. -> http://domain:port{path} <-this path
-		print path
+		print(path)
 
 		# fetch post body data
 		# we use application/json protocol
+		mpath,margs=urllib.parse.splitquery(self.path)
 		source = self.rfile.read(int(self.headers['content-length']))
-		source = urllib.unquote(source).decode("utf-8", 'ignore')
 		data = json.loads(source)
 
 		######
@@ -69,7 +82,7 @@ class ServerHTTP(BaseHTTPRequestHandler):
 		# use json.dumps to format
 		response = json.dumps({
 			'number' : data['number']
-		})
+		}).encode()
 		# send
 		self.wfile.write(response)
 
