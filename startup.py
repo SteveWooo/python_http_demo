@@ -54,6 +54,11 @@ class ServerHTTP(BaseHTTPRequestHandler):
 		# this data is what we need :), signal from html client
 		print(data)
 		print(data['number'])
+		if(path == '/add_1'):
+			data['number'] += 100
+
+		if(path == '/add_2'):
+			data['number'] += 200
 
 		# response data to html client.
 		self.send_response(200)
@@ -63,7 +68,7 @@ class ServerHTTP(BaseHTTPRequestHandler):
 
 		# use json.dumps to format
 		response = json.dumps({
-			'number' : data['number'] + 100
+			'number' : data['number']
 		})
 		# send
 		self.wfile.write(response)
